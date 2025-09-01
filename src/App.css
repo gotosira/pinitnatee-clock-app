@@ -1,0 +1,158 @@
+.app {
+  position: relative;
+  min-height: 100vh;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  background-color: #0b0b0b;
+}
+
+.bg-blur { position: absolute; inset: 0; backdrop-filter: blur(8px); z-index: 0; pointer-events: none; }
+
+.top-bar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.top-left { display: flex; align-items: center; gap: 8px; }
+.top-right { display: flex; align-items: center; gap: 8px; }
+
+.ghost {
+  background: rgba(0,0,0,0.35);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+.ghost.small { padding: 2px 6px; }
+
+.focus { display: none; }
+.focus-remaining { display: none; }
+
+.center {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* removed digital clock */
+
+.greeting {
+  font-size: 36px;
+}
+.greeting .name { font-weight: 700; }
+.name-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.7);
+  color: #fff;
+  font-size: 36px;
+  text-align: center;
+}
+.name-input::placeholder { color: rgba(255,255,255,0.8); }
+
+.goal { margin-top: 12px; }
+.goal-label { opacity: 0.9; font-size: 22px; margin-bottom: 8px; }
+.goal-input {
+  width: 480px;
+  max-width: 90vw;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid rgba(255,255,255,0.8);
+  color: #fff;
+  font-size: 22px;
+  text-align: center;
+  padding: 8px 4px;
+}
+.goal-display { font-size: 22px; border-bottom: 1px dashed rgba(255,255,255,0.5); cursor: text; display: inline-block; padding: 4px 8px; }
+
+.weather { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+.weather .sep { opacity: 0.6; }
+
+.yam-clock { margin-top: 8px; }
+.yam-label { opacity: 0.98; font-size: clamp(14px, 2.2vmin, 22px); margin-bottom: 4px; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+/* chips removed (hidden sequences) */
+
+.yam-minute { margin-top: 6px; }
+
+/* Ensure current yam labels are above the analog dial */
+.yam-clock, .yam-minute { position: relative; z-index: 3; }
+
+/* Analog clock behind the digital time */
+.analog-clock {
+  position: absolute;
+  width: 90vh;
+  height: 90vh;
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  opacity: 0.95;
+  overflow: hidden;
+}
+.analog-clock .dial {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.65);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 0 2px rgba(255,255,255,0.06) inset;
+}
+.analog-clock .dial .dial-bg { position: absolute; inset: 0; background-size: cover; background-position: center; filter: brightness(0.35) saturate(0.9); }
+.analog-clock .hand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: 50% 100%;
+  background: rgba(255,255,255,0.95);
+  border-radius: 2px;
+}
+.analog-clock .hand.hour { width: 0.9%; height: 32%; }
+.analog-clock .hand.minute { width: 0.7%; height: 45%; }
+.analog-clock .hand.second { width: 0.3%; height: 52%; background: #ffffff; opacity: 0.9; }
+.analog-clock .center-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.analog-clock .tick { position: absolute; left: 50%; top: 50%; width: 0.4%; height: 3.5%; background: rgba(255,255,255,0.25); transform-origin: 50% calc(100% - 6px); border-radius: 1px; }
+.analog-clock .tick.major { height: 6.5%; background: rgba(255,255,255,0.6); width: 0.6%; }
+.analog-clock::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,255,255,0.25) inset; }
+
+.analog-clock .dial-info { position: absolute; color: rgba(255,255,255,0.95); text-align: center; font-size: clamp(10px, 1.6vmin, 16px); text-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+.analog-clock .dial-info .label { font-size: clamp(10px, 1.4vmin, 14px); letter-spacing: 1px; opacity: 0.9; }
+.analog-clock .dial-info .value { font-weight: 700; font-size: clamp(12px, 1.8vmin, 18px); }
+.analog-clock .dial-info .value.small { font-weight: 600; font-size: clamp(10px, 1.4vmin, 14px); opacity: 0.95; }
+.analog-clock .dial-info.top { left: 50%; top: 22%; transform: translate(-50%, -50%); display: grid; gap: 0; }
+.analog-clock .dial-info.bottom { left: 50%; top: 78%; transform: translate(-50%, -50%); display: grid; gap: 0; opacity: 0.85; }
+.analog-clock .dial-info.left { left: 25%; top: 52%; transform: translate(-50%, -50%); }
+.analog-clock .dial-info.right { left: 75%; top: 52%; transform: translate(-50%, -50%); }
+
+.tasks, .tasks-header, .tasks-list, .task, .tasks-input { display: none; }
+
+.quote {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.9;
+}
+.quote .mark { opacity: 0.7; }
