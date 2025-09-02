@@ -16,7 +16,7 @@ function unsplashRandomUrl() {
 }
 
 export function useBackground() {
-  const [mode, setMode] = useLocalStorage<BackgroundMode>('bgMode', 'default')
+  const [mode, setMode] = useLocalStorage<BackgroundMode>('bgMode', 'unsplash')
   const [url, setUrl] = useLocalStorage<string>('bgUrl', defaultImageUrl())
 
   useEffect(() => {
