@@ -1,12 +1,10 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useLocalStorage } from './useLocalStorage'
 import { fetchRandomUnsplashUrl } from '../services/unsplash'
 
 export type BackgroundMode = 'default' | 'unsplash'
 
-function defaultImageUrl() {
-  return 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop'
-}
+function defaultImageUrl() { return '' }
 
 function unsplashRandomUrl() {
   const width = Math.max(1280, window.innerWidth)
@@ -16,25 +14,23 @@ function unsplashRandomUrl() {
 }
 
 export function useBackground() {
+  const initRef = useRef(false)
   const [mode, setMode] = useLocalStorage<BackgroundMode>('bgMode', 'unsplash')
-  const [url, setUrl] = useLocalStorage<string>('bgUrl', defaultImageUrl())
+  const [url, setUrl] = useLocalStorage<string>('bgUrl', '')
 
-  useEffect(() => {
-    if (mode === 'unsplash' && !url) {
-      setUrl(unsplashRandomUrl())
-    }
-  }, [mode])
+  // Removed eager fallback setter to avoid multiple image fetches on load
 
-  const style = useMemo(
-    () => ({
-      backgroundImage: `url(${url || defaultImageUrl()})`,
+  const style = useMemo(() => {
+    const base: Record<string, string> = {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
-      backgroundAttachment: 'fixed'
-    }),
-    [url]
-  )
+      backgroundAttachment: 'fixed',
+      backgroundColor: '#111111'
+    }
+    if (url) base.backgroundImage = `url(${url})`
+    return base
+  }, [url])
 
   function emitSet(nextUrl: string, nextMode: BackgroundMode) {
     try {
@@ -66,11 +62,14 @@ export function useBackground() {
 
   function resetDefault() {
     setMode('default')
-    setUrl(defaultImageUrl())
-    emitSet(defaultImageUrl(), 'default')
+    setUrl('')
+    emitSet('', 'default')
   }
 
   useEffect(() => {
+    const initialized = initRef.current
+    if (initialized) return
+    initRef.current = true
     const onSet = (evt: Event) => {
       const e = evt as CustomEvent<{ url: string; mode: BackgroundMode }>
       if (!e.detail) return
