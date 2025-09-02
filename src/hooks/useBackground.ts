@@ -9,10 +9,8 @@ function defaultImageUrl() {
 }
 
 function unsplashRandomUrl() {
-  const width = Math.max(1280, window.innerWidth)
-  const height = Math.max(720, window.innerHeight)
-  const sig = Math.floor(Math.random() * 10_000_000)
-  return `https://source.unsplash.com/${width}x${height}/?nature,landscape,forest,river&sig=${sig}`
+  // Fallback only if API is unavailable: use a stable default to avoid cert/CORS issues
+  return defaultImageUrl()
 }
 
 export function useBackground() {
@@ -78,8 +76,13 @@ export function useBackground() {
       setMode(e.detail.mode)
     }
     window.addEventListener('bg:set', onSet as EventListener)
+    // Auto-refresh every 5 minutes
+    const id = window.setInterval(() => {
+      randomize()
+    }, 5 * 60 * 1000)
     return () => {
       window.removeEventListener('bg:set', onSet as EventListener)
+      window.clearInterval(id)
     }
   }, [])
 
