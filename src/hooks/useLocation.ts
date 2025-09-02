@@ -29,17 +29,14 @@ export function useCurrentLocation(): Geo | null {
 async function enrichLocation(lat: number, lon: number): Promise<Geo> {
   let name: string | undefined
   let elevationM: number | undefined
-  // Reverse geocoding via Open-Meteo (CORS-friendly)
+  // Reverse geocoding (BigDataCloud - permissive CORS, no key)
   try {
     const rev = await fetch(
-      `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=en`
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`
     )
     if (rev.ok) {
       const j = await rev.json()
-      if (Array.isArray(j.results) && j.results.length > 0) {
-        const r = j.results[0]
-        name = r.name || r.admin2 || r.admin1 || r.country || undefined
-      }
+      name = j.city || j.locality || j.principalSubdivision || j.countryName
     }
   } catch {}
 

@@ -33,6 +33,7 @@ export function useBatteryPercentage(): number | null {
             }
           }
         } else {
+          // iOS Safari does not expose Battery API; try Web App Manifest power info via navigator.getBattery polyfills (none available)
           setLevel(null)
         }
       } catch {
