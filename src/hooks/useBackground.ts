@@ -2,9 +2,9 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useLocalStorage } from './useLocalStorage'
 import { fetchRandomUnsplashUrl } from '../services/unsplash'
 
-export type BackgroundMode = 'default' | 'unsplash'
+export type BackgroundMode = 'unsplash'
 
-function defaultImageUrl() { return '' }
+// No default wallpaper; solid color will be used until Unsplash loads
 
 function unsplashRandomUrl() {
   const width = Math.max(1280, window.innerWidth)
@@ -61,9 +61,8 @@ export function useBackground() {
   }
 
   function resetDefault() {
-    setMode('default')
     setUrl('')
-    emitSet('', 'default')
+    emitSet('', 'unsplash')
   }
 
   useEffect(() => {
