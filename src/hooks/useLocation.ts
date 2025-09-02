@@ -29,23 +29,31 @@ export function useCurrentLocation(): Geo | null {
 async function enrichLocation(lat: number, lon: number): Promise<Geo> {
   let name: string | undefined
   let elevationM: number | undefined
+  // Reverse geocoding via Open-Meteo (CORS-friendly)
   try {
     const rev = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
-      { headers: { 'User-Agent': 'pinit-landing' } }
+      `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=en`
     )
     if (rev.ok) {
       const j = await rev.json()
-      name = j.address?.city || j.address?.town || j.address?.village || j.display_name
+      if (Array.isArray(j.results) && j.results.length > 0) {
+        const r = j.results[0]
+        name = r.name || r.admin2 || r.admin1 || r.country || undefined
+      }
     }
   } catch {}
 
+  // Elevation via Open-Meteo Elevation API (CORS-friendly)
   try {
     const elev = await fetch(
-      `https://api.opentopodata.org/v1/etopo1?locations=${lat},${lon}`
+      `https://api.open-meteo.com/v1/elevation?latitude=${lat}&longitude=${lon}`
     )
-    const ej = await elev.json()
-    if (ej && ej.results && ej.results[0]) elevationM = EJNumber(ej.results[0].elevation)
+    if (elev.ok) {
+      const ej = await elev.json()
+      if (ej && Array.isArray(ej.elevation) && ej.elevation.length > 0) {
+        elevationM = EJNumber(ej.elevation[0])
+      }
+    }
   } catch {}
 
   return { lat, lon, name, elevationM }
