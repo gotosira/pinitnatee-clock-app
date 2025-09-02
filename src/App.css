@@ -91,8 +91,8 @@
 /* Analog clock behind the digital time */
 .analog-clock {
   position: absolute;
-  width: 90vh;
-  height: 90vh;
+  width: min(92vmin, 95vh, 95vw);
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   left: 50%;
   top: 50%;
@@ -120,7 +120,7 @@
 }
 .analog-clock .hand.hour { width: 0.9%; height: 32%; }
 .analog-clock .hand.minute { width: 0.7%; height: 45%; }
-.analog-clock .hand.second { width: 0.3%; height: 52%; background: #ffffff; opacity: 0.9; }
+.analog-clock .hand.second { width: 0.3%; height: 48%; background: #ffffff; opacity: 0.9; }
 .analog-clock .center-dot {
   position: absolute;
   left: 50%;
@@ -135,10 +135,10 @@
 .analog-clock .tick.major { height: 6.5%; background: rgba(255,255,255,0.6); width: 0.6%; }
 .analog-clock::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,255,255,0.25) inset; }
 
-.analog-clock .dial-info { position: absolute; color: rgba(255,255,255,0.95); text-align: center; font-size: clamp(10px, 1.6vmin, 16px); text-shadow: 0 2px 6px rgba(0,0,0,0.5); }
-.analog-clock .dial-info .label { font-size: clamp(10px, 1.4vmin, 14px); letter-spacing: 1px; opacity: 0.9; }
-.analog-clock .dial-info .value { font-weight: 700; font-size: clamp(12px, 1.8vmin, 18px); }
-.analog-clock .dial-info .value.small { font-weight: 600; font-size: clamp(10px, 1.4vmin, 14px); opacity: 0.95; }
+.analog-clock .dial-info { position: absolute; color: rgba(255,255,255,0.97); text-align: center; font-size: clamp(14px, 2.6vmin, 28px); text-shadow: 0 2px 8px rgba(0,0,0,0.6); }
+.analog-clock .dial-info .label { font-size: clamp(12px, 2.2vmin, 24px); letter-spacing: 1px; opacity: 0.95; }
+.analog-clock .dial-info .value { font-weight: 800; font-size: clamp(18px, 3.2vmin, 36px); }
+.analog-clock .dial-info .value.small { font-weight: 700; font-size: clamp(16px, 2.6vmin, 28px); opacity: 0.98; }
 .analog-clock .dial-info.top { left: 50%; top: 22%; transform: translate(-50%, -50%); display: grid; gap: 0; }
 .analog-clock .dial-info.bottom { left: 50%; top: 78%; transform: translate(-50%, -50%); display: grid; gap: 0; opacity: 0.85; }
 .analog-clock .dial-info.left { left: 25%; top: 52%; transform: translate(-50%, -50%); }
