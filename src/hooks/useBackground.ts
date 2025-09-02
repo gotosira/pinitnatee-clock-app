@@ -9,8 +9,10 @@ function defaultImageUrl() {
 }
 
 function unsplashRandomUrl() {
-  // Fallback only if API is unavailable: use a stable default to avoid cert/CORS issues
-  return defaultImageUrl()
+  const width = Math.max(1280, window.innerWidth)
+  const height = Math.max(720, window.innerHeight)
+  const sig = Date.now()
+  return `https://source.unsplash.com/${width}x${height}/?nature,landscape,forest,river&sig=${sig}`
 }
 
 export function useBackground() {
@@ -76,6 +78,8 @@ export function useBackground() {
       setMode(e.detail.mode)
     }
     window.addEventListener('bg:set', onSet as EventListener)
+    // Immediately fetch a fresh image on load
+    randomize()
     // Auto-refresh every 5 minutes
     const id = window.setInterval(() => {
       randomize()
