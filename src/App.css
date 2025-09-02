@@ -44,6 +44,13 @@
   position: relative;
   overflow: hidden;
 }
+.digital-time { position: relative; z-index: 3; display: flex; align-items: baseline; gap: 12px; }
+.digital-time .hhmm { font-size: 18vmin; font-weight: 800; letter-spacing: 2px; text-shadow: 0 6px 18px rgba(0,0,0,0.5); }
+.digital-time .ampm { font-size: 4vmin; opacity: 0.95; }
+
+.yam-inline { position: relative; z-index: 3; display: flex; align-items: center; gap: 10px; font-size: clamp(16px, 2.4vmin, 26px); }
+.yam-inline .sep { opacity: 0.8; }
+.yam-inline .yam-label { margin: 0; }
 
 /* removed digital clock */
 

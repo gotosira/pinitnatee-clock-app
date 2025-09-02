@@ -6,12 +6,7 @@ export type BackgroundMode = 'unsplash'
 
 // No default wallpaper; solid color will be used until Unsplash loads
 
-function unsplashRandomUrl() {
-  const width = Math.max(1280, window.innerWidth)
-  const height = Math.max(720, window.innerHeight)
-  const sig = Date.now()
-  return `https://source.unsplash.com/${width}x${height}/?nature,landscape,forest,river&sig=${sig}`
-}
+// We intentionally do not use source.unsplash.com fallback to keep solid bg as the only fallback.
 
 export function useBackground() {
   const initRef = useRef(false)
@@ -56,8 +51,8 @@ export function useBackground() {
   async function randomize() {
     setMode('unsplash')
     const apiUrl = await fetchRandomUnsplashUrl()
-    const next = apiUrl || unsplashRandomUrl()
-    preloadAndSet(next)
+    if (apiUrl) preloadAndSet(apiUrl)
+    // if null, keep solid dark background
   }
 
   function resetDefault() {

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 export function useBatteryPercentage(): number | null {
   const [level, setLevel] = useState<number | null>(null)
+  const [manual, setManual] = useState<number | null>(null)
 
   useEffect(() => {
     let battery: any
@@ -46,7 +47,30 @@ export function useBatteryPercentage(): number | null {
     }
   }, [])
 
-  return level
+  useEffect(() => {
+    const read = () => {
+      try {
+        const s = localStorage.getItem('batteryOverride')
+        if (s === null || s === '') setManual(null)
+        else {
+          const n = Number(s)
+          setManual(Number.isFinite(n) ? Math.max(0, Math.min(100, n)) : null)
+        }
+      } catch {
+        setManual(null)
+      }
+    }
+    read()
+    const onAny = () => read()
+    window.addEventListener('storage', onAny)
+    window.addEventListener('battery:override', onAny)
+    return () => {
+      window.removeEventListener('storage', onAny)
+      window.removeEventListener('battery:override', onAny)
+    }
+  }, [])
+
+  return manual ?? level
 }
 
 

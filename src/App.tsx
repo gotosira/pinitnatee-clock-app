@@ -5,6 +5,7 @@ import { useBackground } from './hooks/useBackground'
 import YamClock from './components/YamClock'
 import YamMinute from './components/YamMinute'
 import AnalogClock from './components/analog/AnalogClock'
+import DigitalTime from './components/DigitalTime'
 
 function App() {
   const { style } = useBackground()
@@ -14,8 +15,12 @@ function App() {
       <TopBar />
       <main className="center">
         <AnalogClock />
-        <YamClock />
-        <YamMinute />
+        <DigitalTime />
+        <div className="yam-inline">
+          <YamClock />
+          <span className="sep">/</span>
+          <YamMinute />
+        </div>
       </main>
       <QuoteBar />
     </div>
