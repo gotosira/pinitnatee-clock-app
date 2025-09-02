@@ -5,11 +5,12 @@ export async function fetchRandomUnsplashUrl(keywords?: string[]): Promise<strin
   const query = encodeURIComponent(
     (keywords && keywords.length ? keywords : ['nature', 'landscape', 'forest', 'river']).join(',')
   )
-  const api = `https://api.unsplash.com/photos/random?query=${query}&orientation=landscape&content_filter=high&count=1`
+  const api = `https://api.unsplash.com/photos/random?query=${query}&orientation=landscape&content_filter=high&count=1&client_id=${accessKey}`
 
   const res = await fetch(api, {
     headers: {
-      Authorization: `Client-ID ${accessKey}`
+      Authorization: `Client-ID ${accessKey}`,
+      'Accept-Version': 'v1'
     }
   })
 
@@ -22,7 +23,7 @@ export async function fetchRandomUnsplashUrl(keywords?: string[]): Promise<strin
   const targetWidth = Math.max(1600, window.innerWidth)
   const targetHeight = Math.max(900, window.innerHeight)
   const sep = raw.includes('?') ? '&' : '?'
-  const composed = `${raw}${sep}w=${targetWidth}&h=${targetHeight}&fit=crop&q=80&auto=format`
+  const composed = `${raw}${sep}w=${targetWidth}&h=${targetHeight}&fit=crop&q=80&auto=format&ts=${Date.now()}`
   return composed
 }
 
