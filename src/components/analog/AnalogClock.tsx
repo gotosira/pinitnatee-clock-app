@@ -67,7 +67,7 @@ export default function AnalogClock() {
       </div>
       <div className="dial-info left">
         <div className="label">🔋</div>
-        <div className="value">{battery ?? '—'}%</div>
+        <div className="value">{typeof battery === 'number' ? `${battery}%` : '—'}</div>
       </div>
       <div className="dial-info right">
         <div className="label">📍</div>

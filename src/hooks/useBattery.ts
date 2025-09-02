@@ -8,13 +8,32 @@ export function useBatteryPercentage(): number | null {
     let unsubscribe: (() => void) | null = null
     async function init() {
       try {
-        const nav: any = navigator
-        if (nav.getBattery) {
-          battery = await nav.getBattery()
-          const update = () => setLevel(Math.round(battery.level * 100))
-          update()
-          battery.addEventListener('levelchange', update)
-          unsubscribe = () => battery.removeEventListener('levelchange', update)
+        const nav: any = navigator as any
+        const candidate = nav.getBattery
+          ? await nav.getBattery()
+          : nav.battery || nav.mozBattery || nav.webkitBattery
+        if (candidate) {
+          battery = candidate
+          const calc = () => {
+            const raw = typeof battery.level === 'number' ? battery.level : undefined
+            if (typeof raw === 'number') setLevel(Math.round(raw * 100))
+          }
+          calc()
+          if (battery.addEventListener) {
+            battery.addEventListener('levelchange', calc)
+            unsubscribe = () => battery.removeEventListener('levelchange', calc)
+          } else if ('onlevelchange' in battery) {
+            const prev = battery.onlevelchange
+            battery.onlevelchange = () => {
+              prev?.()
+              calc()
+            }
+            unsubscribe = () => {
+              battery.onlevelchange = prev
+            }
+          }
+        } else {
+          setLevel(null)
         }
       } catch {
         setLevel(null)
