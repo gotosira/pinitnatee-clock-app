@@ -4,6 +4,7 @@ import { useCurrentLocation } from '../../hooks/useLocation'
 import { useTemperature } from '../../hooks/useTemperature'
 import { useBackground } from '../../hooks/useBackground'
 import { weatherEmoji } from '../../utils/weather'
+import { Weather } from '../Weather'
 
 export default function AnalogClock() {
   const [now, setNow] = useState<Date>(new Date())
@@ -78,6 +79,10 @@ export default function AnalogClock() {
           <div className="value small">⬆️ {Math.round(geo!.elevationM!)} m</div>
         )}
         <div className="value small">{weatherEmoji(temp.code)} {temp.value === null ? '—' : `${Math.round(temp.value)}°${temp.unit}`}</div>
+      </div>
+      {/* optional detailed weather inline */}
+      <div className="dial-info weather-inline" aria-hidden="true">
+        <Weather />
       </div>
     </div>
   )

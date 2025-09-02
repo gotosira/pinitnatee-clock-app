@@ -78,6 +78,8 @@
 
 .weather { display: flex; align-items: center; gap: 6px; font-weight: 600; }
 .weather .sep { opacity: 0.6; }
+/* position inline weather inside dial if rendered */
+.analog-clock .weather-inline { left: 50%; top: 90%; transform: translate(-50%, -50%); }
 
 .yam-clock { margin-top: 8px; }
 .yam-label { opacity: 0.98; font-size: clamp(14px, 2.2vmin, 22px); margin-bottom: 4px; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
