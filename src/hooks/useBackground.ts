@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useLocalStorage } from './useLocalStorage'
 import { fetchRandomUnsplashUrl } from '../services/unsplash'
+import { useCurrentLocation } from './useLocation'
+import { useTemperature } from './useTemperature'
+import { weatherKeywords } from '../utils/weather'
+import { timeOfDayKeywords } from '../utils/timeKeywords'
 
 export type BackgroundMode = 'unsplash'
 
@@ -12,6 +16,8 @@ export function useBackground() {
   const initRef = useRef(false)
   const [mode, setMode] = useLocalStorage<BackgroundMode>('bgMode', 'unsplash')
   const [url, setUrl] = useLocalStorage<string>('bgUrl', '')
+  const geo = useCurrentLocation()
+  const temp = useTemperature()
 
   // Removed eager fallback setter to avoid multiple image fetches on load
 
@@ -50,7 +56,15 @@ export function useBackground() {
 
   async function randomize() {
     setMode('unsplash')
-    const apiUrl = await fetchRandomUnsplashUrl()
+    const city = geo?.name
+    const wKeys = weatherKeywords(temp.code)
+    const tKeys = timeOfDayKeywords(new Date())
+    const apiUrl = await fetchRandomUnsplashUrl([
+      ...(city ? [city] : []),
+      'city',
+      ...wKeys,
+      ...tKeys
+    ])
     if (apiUrl) preloadAndSet(apiUrl)
     // if null, keep solid dark background
   }

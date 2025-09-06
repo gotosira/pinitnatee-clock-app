@@ -35,6 +35,8 @@ export function QuoteBar() {
     }
     // city hint (prefer urban topics at night)
     if (geo?.name && (h >= 18 || h < 6)) list.unshift('life')
+    // ensure a reliable fallback category
+    list.push('success')
     return Array.from(new Set(list))
   }
 
@@ -69,12 +71,12 @@ export function QuoteBar() {
   }, [geo?.name, temp.code])
 
   return (
-    <div className="quote">
+    <>
       <span className="mark">“</span>
       <span>{quote.text}</span>
       <span className="mark">”</span>
       {quote.author && <span className="author"> — {quote.author}</span>}
-    </div>
+    </>
   )
 }
 

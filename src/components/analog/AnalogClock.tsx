@@ -4,7 +4,7 @@ import { useCurrentLocation } from '../../hooks/useLocation'
 import { useTemperature } from '../../hooks/useTemperature'
 import { useBackground } from '../../hooks/useBackground'
 import { weatherEmoji } from '../../utils/weather'
-import { Weather } from '../Weather'
+import QuoteBar from '../QuoteBar'
 import DigitalTime from '../DigitalTime'
 import YamInlineText from '../YamInline'
 
@@ -149,10 +149,8 @@ export default function AnalogClock() {
         )}
         <div className="value small">{weatherEmoji(temp.code)} {temp.value === null ? '—' : `${Math.round(temp.value)}°${temp.unit}`}</div>
       </div>
-      {/* optional detailed weather inline */}
-      <div className="dial-info weather-inline" aria-hidden="true">
-        <Weather />
-      </div>
+      {/* quote at bottom overlay */}
+      <div className="quote"><QuoteBar /></div>
     </div>
   )
 }
