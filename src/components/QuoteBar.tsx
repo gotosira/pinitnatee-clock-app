@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { useCurrentLocation } from '../hooks/useLocation'
-import { useTemperature } from '../hooks/useTemperature'
 
 type Quote = { text: string; author?: string }
 
@@ -12,28 +10,13 @@ const fallbackQuotes: Quote[] = [
 
 export function QuoteBar() {
   const [quote, setQuote] = useState<Quote>(fallbackQuotes[0])
-  const geo = useCurrentLocation()
-  const temp = useTemperature()
   const loadedRef = useRef(false)
-
-  function pickCategories(): string[] {
-    // API Ninjas supports a fixed set of categories.
-    // Keep the list small and always include a reliable fallback.
-    const h = new Date().getHours()
-    const list: string[] = []
-    if (h >= 5 && h < 11) list.push('inspirational')
-    else if (h >= 11 && h < 16) list.push('success')
-    else if (h >= 16 && h < 20) list.push('life')
-    else list.push('wisdom')
-    list.push('success')
-    return Array.from(new Set(list))
-  }
 
   useEffect(() => {
     async function load() {
       try {
         const apiKey = import.meta.env.VITE_API_NINJAS_KEY as string | undefined
-        const categories = pickCategories()
+        // const categories = pickCategories()
         if (apiKey && !(window as any).__quoteLoaded) {
           // Try success only (most reliable), otherwise fallback immediately
           const url = `https://api.api-ninjas.com/v1/quotes?category=success&limit=1`

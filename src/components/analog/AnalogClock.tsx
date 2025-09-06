@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import SevenTable from '../SevenTable'
 import { useBatteryPercentage } from '../../hooks/useBattery'
 import { useCurrentLocation } from '../../hooks/useLocation'
 import { useTemperature } from '../../hooks/useTemperature'
