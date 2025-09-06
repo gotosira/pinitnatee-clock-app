@@ -56,7 +56,8 @@ export default function SevenTable() {
   const now = new Date()
   const rows = useMemo(() => buildRows(now), [now.getTime()])
   const [picked, setPicked] = useState<number | null>(null)
-  const autoValue = useMemo(() => mod7(rows[0][0] + rows[1][0]), [rows])
+  const currentYamNumber = useMemo(() => getCurrentYam(now), [now.getTime()])
+  const autoValue = currentYamNumber
   const highlightValue = picked ?? autoValue
   const highlightRows = useMemo(() => new Set([0, 1, 2, 4, 7, 8]), [])
   const [ui] = useInterface()
