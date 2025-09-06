@@ -52,4 +52,51 @@ export function nightSequenceFor(dayNumber: number): number[] {
   return rotated7.concat(rotated7[0])
 }
 
+export function getCurrentYam(date: Date): number {
+  const periodDay = isDaytime(date)
+  if (periodDay) {
+    const dayNo = getThaiDayNumber(date)
+    const seq = daySequenceFor(dayNo)
+    return seq[segmentIndexForDay(date)]
+  }
+  const useDate = new Date(date)
+  if (date.getHours() < 6) useDate.setDate(date.getDate() - 1)
+  const dayNo = getThaiDayNumber(useDate)
+  const seq = nightSequenceFor(dayNo)
+  return seq[segmentIndexForNight(date)]
+}
+
+export function getCurrentPinichMini(date: Date): number {
+  const periodDay = isDaytime(date)
+  const dayNo = (() => {
+    if (periodDay) return getThaiDayNumber(date)
+    const d = new Date(date)
+    if (date.getHours() < 6) d.setDate(date.getDate() - 1)
+    return getThaiDayNumber(d)
+  })()
+  const seq = periodDay ? daySequenceFor(dayNo) : nightSequenceFor(dayNo)
+  const segIdx = periodDay ? segmentIndexForDay(date) : segmentIndexForNight(date)
+  const currentYamNumber = seq[segIdx]
+  const full7 = seq.slice(0, 7)
+  const startIdx = full7.indexOf(currentYamNumber)
+  const rotated = full7.slice(startIdx).concat(full7.slice(0, startIdx))
+  const rotated8 = rotated.concat(rotated[0])
+
+  const totalMinutes = date.getMinutes() + date.getSeconds() / 60
+  const minutesSinceSegmentStart = (periodDay
+    ? ((date.getHours() - 6) * 60 + totalMinutes) % 90
+    : ((date.getHours() >= 18 ? (date.getHours() - 18) * 60 : (date.getHours() + 6) * 60) + totalMinutes) % 90)
+  const minutesInHalfHour = minutesSinceSegmentStart % 30
+  const bounds = [0, 3.75, 7.5, 11.25, 15, 18.75, 22.5, 26.25, 30]
+  let idx = 0
+  for (let i = 0; i < 8; i++) {
+    const start = bounds[i]
+    const end = bounds[i + 1]
+    const inclusiveStart = i === 0 ? minutesInHalfHour >= start : minutesInHalfHour > start
+    const inclusiveEnd = minutesInHalfHour <= end
+    if (inclusiveStart && inclusiveEnd) { idx = i; break }
+  }
+  return rotated8[idx]
+}
+
 

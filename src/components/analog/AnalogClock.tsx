@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
+import SevenTable from '../SevenTable'
 import { useBatteryPercentage } from '../../hooks/useBattery'
 import { useCurrentLocation } from '../../hooks/useLocation'
 import { useTemperature } from '../../hooks/useTemperature'
 import { useBackground } from '../../hooks/useBackground'
 import { weatherEmoji } from '../../utils/weather'
-import QuoteBar from '../QuoteBar'
+// quote now rendered in TopBar
 import DigitalTime from '../DigitalTime'
 import YamInlineText from '../YamInline'
 
@@ -93,6 +94,7 @@ export default function AnalogClock() {
         <path d={dy} stroke="url(#yamGrad)" strokeWidth="2" fill="none" strokeLinecap="round" />
         <path d={d} stroke="url(#pinichGrad)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
       </svg>
+      {/* seven modal moved to TopBar */}
       {/* numerals 12, 3, 6, 9 */}
       <svg className="numerals-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
         <text x={p12.x} y={p12.y} textAnchor="middle" dominantBaseline="middle" className="numeral">12</text>
@@ -149,8 +151,7 @@ export default function AnalogClock() {
         )}
         <div className="value small">{weatherEmoji(temp.code)} {temp.value === null ? '—' : `${Math.round(temp.value)}°${temp.unit}`}</div>
       </div>
-      {/* quote at bottom overlay */}
-      <div className="quote"><QuoteBar /></div>
+      {/* quote moved to TopBar */}
     </div>
   )
 }

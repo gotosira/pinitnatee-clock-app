@@ -10,7 +10,18 @@ export type BackgroundMode = 'unsplash'
 
 // No default wallpaper; solid color will be used until Unsplash loads
 
-// We intentionally do not use source.unsplash.com fallback to keep solid bg as the only fallback.
+function sourceUnsplashUrl(keywords: string[]): string {
+  const width = Math.max(1280, window.innerWidth)
+  const height = Math.max(720, window.innerHeight)
+  const query = encodeURIComponent(keywords.join(','))
+  const ts = Date.now()
+  return `https://source.unsplash.com/${width}x${height}/?${query}&sig=${ts}`
+}
+
+function isAscii(s: string) {
+  for (let i = 0; i < s.length; i++) if (s.charCodeAt(i) > 127) return false
+  return true
+}
 
 export function useBackground() {
   const initRef = useRef(false)
@@ -56,16 +67,43 @@ export function useBackground() {
 
   async function randomize() {
     setMode('unsplash')
-    const city = geo?.name
+    const city = geo?.name && isAscii(geo.name) ? geo.name : undefined
     const wKeys = weatherKeywords(temp.code)
     const tKeys = timeOfDayKeywords(new Date())
-    const apiUrl = await fetchRandomUnsplashUrl([
+    const keywords = [
       ...(city ? [city] : []),
       'city',
       ...wKeys,
       ...tKeys
-    ])
-    if (apiUrl) preloadAndSet(apiUrl)
+    ]
+    const apiUrl = await fetchRandomUnsplashUrl(keywords)
+    const fallback = sourceUnsplashUrl(keywords)
+    const candidate = apiUrl || fallback
+    // preloading with a safety timeout fallback
+    let settled = false
+    const timer = window.setTimeout(() => {
+      if (!settled) {
+        settled = true
+        preloadAndSet(fallback)
+      }
+    }, 7000)
+    const img = new Image()
+    img.referrerPolicy = 'no-referrer'
+    img.onload = () => {
+      if (!settled) {
+        settled = true
+        window.clearTimeout(timer)
+        preloadAndSet(candidate)
+      }
+    }
+    img.onerror = () => {
+      if (!settled) {
+        settled = true
+        window.clearTimeout(timer)
+        preloadAndSet(fallback)
+      }
+    }
+    img.src = candidate
     // if null, keep solid dark background
   }
 
