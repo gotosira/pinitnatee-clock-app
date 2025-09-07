@@ -93,8 +93,9 @@ export default function SevenTable() {
           {rows.map((r, i) => {
             // Hide rows 6 and 7 (zero-based index 5 and 6)
             if (i === 5 || i === 6) return null
+            const trClass = i < 3 ? 'g1' : (i === 3 ? 'g2' : (i === 4 ? 'g3' : ((i === 7 || i === 8) ? 'g4' : '')))
             return (
-            <tr key={i}>
+            <tr key={i} className={trClass}>
               {r.map((n, j) => (
                 <td key={j} className={highlightRows.has(i) && n === highlightValue ? 'hl' : undefined} onClick={() => onClickCell(n)}>
                   <span>{n}{i === starRowIndex && n === currentYam ? ' ' : ''}{i === starRowIndex && n === currentYam ? <span className="star">⭐</span> : null}</span>

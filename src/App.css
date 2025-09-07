@@ -200,7 +200,10 @@
 .seven-wrapper { padding: 12px; color: #fff; }
 .seven-table { width: 100%; border-collapse: collapse; border-spacing: 0; text-align: center; font-weight: 700; font-size: clamp(18px, 3vmin, 30px); border-radius: 0; overflow: hidden; }
 .seven-table tr { background: rgba(28,32,40,0.88); }
-.seven-table tr:nth-child(odd) { background: rgba(26,30,38,0.92); }
+.seven-table tr.g1 { background: rgba(28,32,40,0.90); }
+.seven-table tr.g2 { background: var(--row4-bg); }
+.seven-table tr.g3 { background: rgba(180,140,255,0.12); }
+.seven-table tr.g4 { background: linear-gradient(180deg, rgba(0,212,255,0.10), rgba(160,120,255,0.16)); }
 .seven-table td { padding: 0; border: 1px solid rgba(255,255,255,0.08); height: clamp(48px, 8.2vmin, 74px); vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: 0.5px; }
 .seven-table td > * { display: inline-block; padding: 0 16px; width: 100%; box-sizing: border-box; }
 .seven-table tr + tr td { border-top-color: rgba(255,255,255,0.15); }
