@@ -98,7 +98,7 @@ export default function SevenTable() {
             <tr key={i} className={trClass}>
               {r.map((n, j) => (
                 <td key={j} className={highlightRows.has(i) && n === highlightValue ? 'hl' : undefined} onClick={() => onClickCell(n)}>
-                  <span>{n}{i === starRowIndex && n === currentYam ? ' ' : ''}{i === starRowIndex && n === currentYam ? <span className="star">⭐</span> : null}</span>
+                  <span>{n}{i === starRowIndex && n === currentYam ? ' ' : ''}{i === starRowIndex && n === currentYam ? <span className="star" aria-label="current yam">⭐</span> : null}</span>
                 </td>
               ))}
             </tr>
