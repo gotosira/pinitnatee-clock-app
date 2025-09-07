@@ -49,7 +49,11 @@ export function useBackground() {
       backgroundAttachment: isCoarse ? 'scroll' : 'fixed',
       backgroundColor: '#111111'
     }
-    if (url) base.backgroundImage = `url(${url})`
+    if (url) {
+      // Some browsers may wrap URL with quotes when persisted. Strip quotes to avoid double-quoted URL.
+      const clean = url.replace(/^"|"$/g, '')
+      base.backgroundImage = `url(${clean})`
+    }
     return base
   }, [url])
 

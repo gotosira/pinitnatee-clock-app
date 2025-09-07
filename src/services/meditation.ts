@@ -45,12 +45,12 @@ export async function fetchMeditationTrack(): Promise<string | null> {
   }
   // Curated static list (mix of Archive and Wikimedia; we will still attempt playback gracefully)
   const curatedFallbacks: string[] = [
-    // Archive.org direct MP3s (example identifiers may vary across time; still provide a few known ambient items)
-    // If any fails, audio element will just try the next via caller logic
-    'https://archive.org/download/Meditation-Relaxation/Meditation-Relaxation.mp3',
-    'https://archive.org/download/relaxing-music-2019-01/Relaxing%20Music%20-%2001.mp3',
-    // Wikimedia OGG (some browsers may not support; kept as last resort)
-    'https://upload.wikimedia.org/wikipedia/commons/3/3a/Celestial_Ambience.ogg'
+    // Nature/relax ambience (rain, river, forest) under CC/PD
+    'https://archive.org/download/rain-and-thunder-ambient/Rain%20and%20Thunder%20-%2001.mp3',
+    'https://archive.org/download/relaxing-nature-sounds-collection/Forest%20Stream%20-%2001.mp3',
+    'https://archive.org/download/ocean-waves-relaxation/Ocean%20Waves%20-%2001.mp3',
+    // Wikimedia CC0 ambience (ogg)
+    'https://upload.wikimedia.org/wikipedia/commons/7/7e/Rain_on_a_window.ogg'
   ]
   return curatedFallbacks.find(Boolean) || null
 }
