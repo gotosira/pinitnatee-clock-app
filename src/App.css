@@ -198,10 +198,11 @@
 
 /* Seven table - simplified, no gaps, emphasized 4th column for first 3 rows, distinct last 2 rows */
 .seven-wrapper { padding: 12px; color: #fff; }
-.seven-table { width: 100%; border-collapse: collapse; border-spacing: 0; text-align: center; font-weight: 700; font-size: clamp(18px, 3vmin, 30px); }
-.seven-table tr { background: rgba(26,30,38,0.9); }
-.seven-table td { padding: 0; border: 1px solid rgba(255,255,255,0.10); height: clamp(44px, 8vmin, 72px); vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.seven-table td > * { display: inline-block; padding: 0 14px; width: 100%; box-sizing: border-box; }
+.seven-table { width: 100%; border-collapse: collapse; border-spacing: 0; text-align: center; font-weight: 700; font-size: clamp(18px, 3vmin, 30px); border-radius: 0; overflow: hidden; }
+.seven-table tr { background: rgba(28,32,40,0.88); }
+.seven-table tr:nth-child(odd) { background: rgba(26,30,38,0.92); }
+.seven-table td { padding: 0; border: 1px solid rgba(255,255,255,0.08); height: clamp(48px, 8.2vmin, 74px); vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: 0.5px; }
+.seven-table td > * { display: inline-block; padding: 0 16px; width: 100%; box-sizing: border-box; }
 .seven-table tr + tr td { border-top-color: rgba(255,255,255,0.15); }
 :root { --hl-bg-watch: rgba(0,180,255,0.18); --hl-ring-watch: rgba(0,180,255,0.55); --hl-glow-watch: rgba(0,180,255,0.7); --hl-bg-simple: rgba(255,120,0,0.18); --hl-ring-simple: rgba(255,120,0,0.55); --hl-glow-simple: rgba(255,120,0,0.7); --row4-bg: rgba(0,160,220,0.10); --row4-border: rgba(0,160,220,0.25); --row8-bg: rgba(0,212,255,0.10); --row8-border: rgba(0,212,255,0.25); --row9-bg: rgba(160,120,255,0.16); --row9-border: rgba(160,120,255,0.3); }
 .seven-table tbody tr:nth-child(-n+3) td:nth-child(4) { background: rgba(255,255,255,0.06); }

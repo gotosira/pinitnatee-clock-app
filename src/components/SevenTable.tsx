@@ -59,9 +59,6 @@ export default function SevenTable() {
   const [picked, setPicked] = useState<number | null>(() => {
     try { const v = localStorage.getItem('sevenPicked'); return v ? Number(v) : null } catch { return null }
   })
-  const [showRow4, setShowRow4] = useState<boolean>(() => {
-    try { const v = localStorage.getItem('sevenShowRow4'); return v ? v === '1' : true } catch { return true }
-  })
   const currentYamNumber = useMemo(() => getCurrentYam(now), [now.getTime()])
   const autoValue = currentYamNumber
   const highlightValue = picked ?? autoValue
@@ -87,17 +84,16 @@ export default function SevenTable() {
   const starRowIndex = minutesSinceYamStart <= 30 ? 0 : minutesSinceYamStart <= 60 ? 1 : 2
   const currentYam = rows[1]?.[0]
   return (
-    <div className={`seven-wrapper ${ui === 'watchface' ? 'theme-watchface' : 'theme-simple'} ${showRow4 ? 'show-row4' : ''}`} aria-hidden="true">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <div style={{ fontSize: 12, opacity: 0.8 }}>แถว 4: ผลรวมต่อคอลัมน์</div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button className="ghost small" onClick={() => { const next = !showRow4; setShowRow4(next); try { localStorage.setItem('sevenShowRow4', next ? '1' : '0') } catch {} }}>{showRow4 ? 'Hide Row 4' : 'Show Row 4'}</button>
-          <button className="ghost small" onClick={() => { setPicked(null); try { localStorage.removeItem('sevenPicked') } catch {} }}>Reset</button>
-        </div>
+    <div className={`seven-wrapper ${ui === 'watchface' ? 'theme-watchface' : 'theme-simple'}`} aria-hidden="true">
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+        <button className="ghost small" onClick={() => { setPicked(null); try { localStorage.removeItem('sevenPicked') } catch {} }}>Reset</button>
       </div>
       <table className="seven-table">
         <tbody>
-          {rows.map((r, i) => (
+          {rows.map((r, i) => {
+            // Hide rows 6 and 7 (zero-based index 5 and 6)
+            if (i === 5 || i === 6) return null
+            return (
             <tr key={i}>
               {r.map((n, j) => (
                 <td key={j} className={highlightRows.has(i) && n === highlightValue ? 'hl' : undefined} onClick={() => onClickCell(n)}>
@@ -105,7 +101,8 @@ export default function SevenTable() {
                 </td>
               ))}
             </tr>
-          ))}
+            )
+          })}
         </tbody>
       </table>
     </div>
