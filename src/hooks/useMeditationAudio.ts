@@ -15,6 +15,7 @@ export function useMeditationAudio() {
       a.loop = true
       a.preload = 'auto'
       a.volume = 0.25
+      a.crossOrigin = 'anonymous'
       audioRef.current = a
     }
   }, [])
