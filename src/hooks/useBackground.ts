@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useLocalStorage } from './useLocalStorage'
-import { fetchRandomUnsplashUrl } from '../services/unsplash'
+import { fetchRandomUnsplashUrl, isUnsplashTemporarilyDisabled } from '../services/unsplash'
 import { useCurrentLocation } from './useLocation'
 import { useTemperature } from './useTemperature'
 import { weatherKeywords } from '../utils/weather'
@@ -10,13 +10,7 @@ export type BackgroundMode = 'unsplash'
 
 // No default wallpaper; solid color will be used until Unsplash loads
 
-function sourceUnsplashUrl(keywords: string[]): string {
-  const width = Math.max(1280, window.innerWidth)
-  const height = Math.max(720, window.innerHeight)
-  const query = encodeURIComponent(keywords.join(','))
-  const ts = Date.now()
-  return `https://source.unsplash.com/${width}x${height}/?${query}&sig=${ts}`
-}
+// removed Source Unsplash fallback (often 503 on Safari)
 
 function picsumUrl(): string {
   const width = Math.max(1280, window.innerWidth)
@@ -88,20 +82,19 @@ export function useBackground() {
       ...wKeys,
       ...tKeys
     ]
-    const apiUrl = await fetchRandomUnsplashUrl(keywords)
-    const fallback = sourceUnsplashUrl(keywords)
+    const disabled = isUnsplashTemporarilyDisabled()
+    const apiUrl = disabled ? null : await fetchRandomUnsplashUrl(keywords)
     const lastResort = picsumUrl()
-    const candidate = apiUrl || fallback || lastResort
+    const candidate = apiUrl || lastResort
     // preloading with a safety timeout fallback
     let settled = false
     const timer = window.setTimeout(() => {
       if (!settled) {
         settled = true
-        preloadAndSet(apiUrl || fallback || lastResort)
+        preloadAndSet(lastResort)
       }
     }, 7000)
     const img = new Image()
-    img.referrerPolicy = 'no-referrer'
     img.onload = () => {
       if (!settled) {
         settled = true
@@ -113,8 +106,8 @@ export function useBackground() {
       if (!settled) {
         settled = true
         window.clearTimeout(timer)
-        // try api, then fallback, then picsum
-        preloadAndSet(apiUrl || fallback || lastResort)
+        // final fallback
+        preloadAndSet(lastResort)
       }
     }
     img.src = candidate
