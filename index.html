@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <link rel="preconnect" href="https://api.unsplash.com" crossorigin>
+    <link rel="icon" type="image/svg+xml" href="pinit-clock.svg" />
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pinit Clock</title>
+    <script type="module" crossorigin src="/pinitnatee-clock-app/assets/index-CpaxQuwG.js"></script>
+    <link rel="stylesheet" crossorigin href="/pinitnatee-clock-app/assets/index-DHOqVLEI.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js').catch(() => {})
+        })
+      }
+    </script>
+  </body>
+</html>
