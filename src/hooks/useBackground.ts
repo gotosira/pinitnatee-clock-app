@@ -140,9 +140,10 @@ export function useBackground() {
       w.__bgInit = true
       // Immediately fetch a fresh image on load
       randomize()
-      // Auto-refresh every 5 minutes
+      // Auto-refresh every 5 minutes ONLY if page visibility is visible to avoid
+      // triggering fetches during quick interface switches; also ignore UI theme changes
       w.__bgInterval = window.setInterval(() => {
-        randomize()
+        if (document.visibilityState === 'visible') randomize()
       }, 5 * 60 * 1000)
     } else {
       // ensure we pick up the current URL if already set by another instance
