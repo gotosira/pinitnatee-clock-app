@@ -125,16 +125,20 @@ export default function AnalogClock() {
       <div className="dial-info left">
         <div className="label">🔋</div>
         <div className="value">{typeof battery === 'number' ? `${battery}%` : '—'}</div>
-        {!battery && (
-          <div className="value small" title="Tap to set battery override" onClick={() => {
-            const input = prompt('Enter battery percent (0-100)')
-            if (input === null) return
-            try {
-              localStorage.setItem('batteryOverride', input)
-              window.dispatchEvent(new Event('battery:override'))
-            } catch {}
-          }}>Set</div>
-        )}
+        <div className="value small" title="Set battery override" onClick={() => {
+          const input = prompt('Battery percent (0-100). Leave empty to clear.')
+          if (input === null) return
+          const trimmed = input.trim()
+          try {
+            if (trimmed === '') localStorage.removeItem('batteryOverride')
+            else {
+              const n = Number(trimmed)
+              if (!Number.isFinite(n) || n < 0 || n > 100) { alert('Please enter a number between 0 and 100'); return }
+              localStorage.setItem('batteryOverride', String(Math.round(n)))
+            }
+            window.dispatchEvent(new Event('battery:override'))
+          } catch {}
+        }}>Set</div>
       </div>
       <div className="dial-info right">
         <div className="label">📍</div>
