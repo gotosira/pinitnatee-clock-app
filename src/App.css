@@ -203,10 +203,11 @@
 .seven-table td { padding: 0; border: 1px solid rgba(255,255,255,0.10); height: clamp(44px, 8vmin, 72px); vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .seven-table td > * { display: inline-block; padding: 0 14px; width: 100%; box-sizing: border-box; }
 .seven-table tr + tr td { border-top-color: rgba(255,255,255,0.15); }
+:root { --hl-bg-watch: rgba(0,180,255,0.18); --hl-ring-watch: rgba(0,180,255,0.55); --hl-glow-watch: rgba(0,180,255,0.7); --hl-bg-simple: rgba(255,120,0,0.18); --hl-ring-simple: rgba(255,120,0,0.55); --hl-glow-simple: rgba(255,120,0,0.7); --row4-bg: rgba(0,160,220,0.10); --row4-border: rgba(0,160,220,0.25); --row8-bg: rgba(0,212,255,0.10); --row8-border: rgba(0,212,255,0.25); --row9-bg: rgba(160,120,255,0.16); --row9-border: rgba(160,120,255,0.3); }
 .seven-table tbody tr:nth-child(-n+3) td:nth-child(4) { background: rgba(255,255,255,0.06); }
-.seven-wrapper.show-row4 .seven-table tbody tr:nth-child(4) td { background: rgba(0,160,220,0.10); border-color: rgba(0,160,220,0.25); }
-.seven-table tbody tr:nth-child(8) td { background: rgba(0,212,255,0.10); border-color: rgba(0,212,255,0.25); }
-.seven-table tbody tr:nth-child(9) td { background: rgba(160,120,255,0.16); border-color: rgba(160,120,255,0.3); }
-.theme-watchface .seven-table td.hl { background: rgba(0,180,255,0.18); box-shadow: 0 0 0 2px rgba(0,180,255,0.55), 0 0 16px rgba(0,180,255,0.7); }
-.theme-simple .seven-table td.hl { background: rgba(255,120,0,0.18); box-shadow: 0 0 0 2px rgba(255,120,0,0.55), 0 0 16px rgba(255,120,0,0.7); }
+.seven-wrapper.show-row4 .seven-table tbody tr:nth-child(4) td { background: var(--row4-bg); border-color: var(--row4-border); }
+.seven-table tbody tr:nth-child(8) td { background: var(--row8-bg); border-color: var(--row8-border); }
+.seven-table tbody tr:nth-child(9) td { background: var(--row9-bg); border-color: var(--row9-border); }
+.theme-watchface .seven-table td.hl { background: var(--hl-bg-watch); box-shadow: 0 0 0 2px var(--hl-ring-watch), 0 0 16px var(--hl-glow-watch); }
+.theme-simple .seven-table td.hl { background: var(--hl-bg-simple); box-shadow: 0 0 0 2px var(--hl-ring-simple), 0 0 16px var(--hl-glow-simple); }
 .seven-table .star { text-shadow: 0 0 8px rgba(255,255,255,0.8); padding-left: 6px; }

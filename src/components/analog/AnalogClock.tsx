@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useBatteryPercentage } from '../../hooks/useBattery'
 import { useCurrentLocation } from '../../hooks/useLocation'
 import { useTemperature } from '../../hooks/useTemperature'
@@ -7,18 +7,14 @@ import { weatherEmoji } from '../../utils/weather'
 // quote now rendered in TopBar
 import DigitalTime from '../DigitalTime'
 import YamInlineText from '../YamInline'
+import { useTime } from '../../state/time'
 
 export default function AnalogClock() {
-  const [now, setNow] = useState<Date>(new Date())
+  const { now } = useTime()
   const battery = useBatteryPercentage()
   const geo = useCurrentLocation()
   const temp = useTemperature()
   const { url } = useBackground()
-
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000)
-    return () => clearInterval(id)
-  }, [])
 
   const sec = now.getSeconds()
   const min = now.getMinutes() + sec / 60
