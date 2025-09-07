@@ -4,9 +4,11 @@ import { useState } from 'react'
 import { lazy, Suspense } from 'react'
 const SevenTable = lazy(() => import('./SevenTable'))
 import QuoteBar from './QuoteBar'
+import { useMeditationAudio } from '../hooks/useMeditationAudio'
 
 export function TopBar() {
   const [showSeven, setShowSeven] = useState(false)
+  const { enabled, setEnabled } = useMeditationAudio()
   return (
     <>
       <div className="top-bar">
@@ -14,6 +16,7 @@ export function TopBar() {
           <InterfaceSwitcher />
           <BackgroundControls />
           <button className="ghost" onClick={() => setShowSeven(true)}>7 ตัวพินิจนาที</button>
+          <button className="ghost" onClick={() => setEnabled(!enabled)}>{enabled ? 'Meditation: On' : 'Meditation: Off'}</button>
         </div>
         <div className="top-right" />
       </div>
