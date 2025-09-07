@@ -18,6 +18,13 @@ function sourceUnsplashUrl(keywords: string[]): string {
   return `https://source.unsplash.com/${width}x${height}/?${query}&sig=${ts}`
 }
 
+function picsumUrl(): string {
+  const width = Math.max(1280, window.innerWidth)
+  const height = Math.max(720, window.innerHeight)
+  const ts = Date.now()
+  return `https://picsum.photos/${width}/${height}?random=${ts}`
+}
+
 function isAscii(s: string) {
   for (let i = 0; i < s.length; i++) if (s.charCodeAt(i) > 127) return false
   return true
@@ -80,13 +87,14 @@ export function useBackground() {
     ]
     const apiUrl = await fetchRandomUnsplashUrl(keywords)
     const fallback = sourceUnsplashUrl(keywords)
-    const candidate = apiUrl || fallback
+    const lastResort = picsumUrl()
+    const candidate = fallback || apiUrl || lastResort
     // preloading with a safety timeout fallback
     let settled = false
     const timer = window.setTimeout(() => {
       if (!settled) {
         settled = true
-        preloadAndSet(fallback)
+        preloadAndSet(apiUrl || lastResort)
       }
     }, 7000)
     const img = new Image()
@@ -102,7 +110,8 @@ export function useBackground() {
       if (!settled) {
         settled = true
         window.clearTimeout(timer)
-        preloadAndSet(fallback)
+        // try api first if available, otherwise picsum
+        preloadAndSet(apiUrl || lastResort)
       }
     }
     img.src = candidate
