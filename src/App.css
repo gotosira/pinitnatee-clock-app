@@ -209,3 +209,4 @@
 .seven-table tbody tr:nth-child(9) td { background: rgba(160,120,255,0.16); border-color: rgba(160,120,255,0.3); }
 .theme-watchface .seven-table td.hl { background: rgba(0,180,255,0.18); box-shadow: 0 0 0 2px rgba(0,180,255,0.55), 0 0 16px rgba(0,180,255,0.7); }
 .theme-simple .seven-table td.hl { background: rgba(255,120,0,0.18); box-shadow: 0 0 0 2px rgba(255,120,0,0.55), 0 0 16px rgba(255,120,0,0.7); }
+.seven-table .star { text-shadow: 0 0 8px rgba(255,255,255,0.8); padding-left: 6px; }

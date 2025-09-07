@@ -2,6 +2,7 @@ import { useMemo, useState, useCallback } from 'react'
 import { useInterface } from '../state/ui'
 import { isDaytime } from '../utils/yam'
 import { getCurrentPinichMini, getCurrentYam, getThaiDayNumber } from '../utils/yam'
+import { useTime } from '../state/time'
 
 const CYCLE = [1, 6, 4, 2, 7, 5, 3]
 const mod7 = (n: number) => ((n - 1) % 7) + 1
@@ -53,15 +54,20 @@ function buildRows(now: Date) {
 }
 
 export default function SevenTable() {
-  const now = new Date()
+  const { now } = useTime()
   const rows = useMemo(() => buildRows(now), [now.getTime()])
-  const [picked, setPicked] = useState<number | null>(null)
+  const [picked, setPicked] = useState<number | null>(() => {
+    try { const v = localStorage.getItem('sevenPicked'); return v ? Number(v) : null } catch { return null }
+  })
   const currentYamNumber = useMemo(() => getCurrentYam(now), [now.getTime()])
   const autoValue = currentYamNumber
   const highlightValue = picked ?? autoValue
   const highlightRows = useMemo(() => new Set([0, 1, 2, 4, 7, 8]), [])
   const [ui] = useInterface()
-  const onClickCell = useCallback((n: number) => setPicked(n), [])
+  const onClickCell = useCallback((n: number) => {
+    setPicked(n)
+    try { localStorage.setItem('sevenPicked', String(n)); window.dispatchEvent(new Event('localStorageChange')) } catch {}
+  }, [])
 
   // Determine which of the first three rows (0/1/2) to star based on minute within current 90-min Yam
   const minutesSinceYamStart = useMemo(() => {
@@ -79,13 +85,16 @@ export default function SevenTable() {
   const currentYam = rows[1]?.[0]
   return (
     <div className={`seven-wrapper ${ui === 'watchface' ? 'theme-watchface' : 'theme-simple'}`} aria-hidden="true">
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 8 }}>
+        <button className="ghost small" onClick={() => { setPicked(null); try { localStorage.removeItem('sevenPicked') } catch {} }}>Reset</button>
+      </div>
       <table className="seven-table">
         <tbody>
           {rows.map((r, i) => (
             <tr key={i}>
               {r.map((n, j) => (
                 <td key={j} className={highlightRows.has(i) && n === highlightValue ? 'hl' : undefined} onClick={() => onClickCell(n)}>
-                  <span>{n}{i === starRowIndex && n === currentYam ? ' ⭐' : ''}</span>
+                  <span>{n}{i === starRowIndex && n === currentYam ? ' ' : ''}{i === starRowIndex && n === currentYam ? <span className="star">⭐</span> : null}</span>
                 </td>
               ))}
             </tr>

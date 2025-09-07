@@ -33,11 +33,13 @@ export function useBackground() {
   // Removed eager fallback setter to avoid multiple image fetches on load
 
   const style = useMemo(() => {
+    const isCoarse = typeof window !== 'undefined' && !!(window.matchMedia && window.matchMedia('(pointer:coarse)').matches)
     const base: Record<string, string> = {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
-      backgroundAttachment: 'fixed',
+      // iOS Safari/Android Chrome have issues with fixed backgrounds; use scroll on mobile
+      backgroundAttachment: isCoarse ? 'scroll' : 'fixed',
       backgroundColor: '#111111'
     }
     if (url) base.backgroundImage = `url(${url})`
@@ -113,8 +115,7 @@ export function useBackground() {
   }
 
   useEffect(() => {
-    const initialized = initRef.current
-    if (initialized) return
+    if (initRef.current) return
     initRef.current = true
     const onSet = (evt: Event) => {
       const e = evt as CustomEvent<{ url: string; mode: BackgroundMode }>
@@ -123,15 +124,26 @@ export function useBackground() {
       setMode(e.detail.mode)
     }
     window.addEventListener('bg:set', onSet as EventListener)
-    // Immediately fetch a fresh image on load
-    randomize()
-    // Auto-refresh every 5 minutes
-    const id = window.setInterval(() => {
+
+    const w = window as any
+    // prevent double-initialization across multiple hook instances
+    if (!w.__bgInit) {
+      w.__bgInit = true
+      // Immediately fetch a fresh image on load
       randomize()
-    }, 5 * 60 * 1000)
+      // Auto-refresh every 5 minutes
+      w.__bgInterval = window.setInterval(() => {
+        randomize()
+      }, 5 * 60 * 1000)
+    } else {
+      // ensure we pick up the current URL if already set by another instance
+      try {
+        const existing = localStorage.getItem('bgUrl')
+        if (existing) setUrl(existing)
+      } catch {}
+    }
     return () => {
       window.removeEventListener('bg:set', onSet as EventListener)
-      window.clearInterval(id)
     }
   }, [])
 
