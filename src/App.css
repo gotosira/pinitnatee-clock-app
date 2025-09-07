@@ -204,7 +204,7 @@
 .seven-table td > * { display: inline-block; padding: 0 14px; width: 100%; box-sizing: border-box; }
 .seven-table tr + tr td { border-top-color: rgba(255,255,255,0.15); }
 .seven-table tbody tr:nth-child(-n+3) td:nth-child(4) { background: rgba(255,255,255,0.06); }
-.seven-table tbody tr:nth-child(4) td { background: rgba(0,160,220,0.10); border-color: rgba(0,160,220,0.25); }
+.seven-wrapper.show-row4 .seven-table tbody tr:nth-child(4) td { background: rgba(0,160,220,0.10); border-color: rgba(0,160,220,0.25); }
 .seven-table tbody tr:nth-child(8) td { background: rgba(0,212,255,0.10); border-color: rgba(0,212,255,0.25); }
 .seven-table tbody tr:nth-child(9) td { background: rgba(160,120,255,0.16); border-color: rgba(160,120,255,0.3); }
 .theme-watchface .seven-table td.hl { background: rgba(0,180,255,0.18); box-shadow: 0 0 0 2px rgba(0,180,255,0.55), 0 0 16px rgba(0,180,255,0.7); }

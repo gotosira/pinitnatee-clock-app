@@ -71,9 +71,30 @@ export default function YamInline() {
   const mini = useMemo(() => computeMini(now), [now])
   const periodLabel = period === 'day' ? 'ยามกลางวัน' : 'ยามกลางคืน'
 
+  // countdown to next phase boundary (30, 60, 90 minutes within current yam)
+  const secondsSinceYamStart = useMemo(() => {
+    const period: Period = isDaytime(now) ? 'day' : 'night'
+    const h = now.getHours(); const m = now.getMinutes(); const s = now.getSeconds()
+    const since = period === 'day'
+      ? ((h - 6) * 3600 + m * 60 + s) % 5400
+      : ((h >= 18 ? (h - 18) * 3600 : (h + 6) * 3600) + m * 60 + s) % 5400
+    return since
+  }, [now])
+  const boundarySeconds = secondsSinceYamStart < 1800 ? 1800 : secondsSinceYamStart < 3600 ? 3600 : 5400
+  const remain = Math.max(0, boundarySeconds - secondsSinceYamStart)
+  const mm = String(Math.floor(remain / 60)).padStart(2, '0')
+  const ss = String(Math.floor(remain % 60)).padStart(2, '0')
+
+  // optional mobile vibration on boundary
+  useEffect(() => {
+    if (remain === 0 && 'vibrate' in navigator) {
+      try { (navigator as any).vibrate?.(50) } catch {}
+    }
+  }, [remain])
+
   return (
     <div className="yam-inline-text">
-      {periodLabel}: {yam} / ยามพินิจนาที: {mini}
+      {periodLabel}: {yam} / ยามพินิจนาที: {mini} · ⏳ {mm}:{ss}
     </div>
   )
 }

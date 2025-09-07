@@ -1,7 +1,8 @@
 import { BackgroundControls } from './bg/BackgroundControls'
 import InterfaceSwitcher from './InterfaceSwitcher'
 import { useState } from 'react'
-import SevenTable from './SevenTable'
+import { lazy, Suspense } from 'react'
+const SevenTable = lazy(() => import('./SevenTable'))
 import QuoteBar from './QuoteBar'
 
 export function TopBar() {
@@ -19,9 +20,11 @@ export function TopBar() {
       <div className="quote"><QuoteBar /></div>
       {showSeven && (
         <div className="seven-modal" onClick={() => setShowSeven(false)}>
-          <div className="seven-modal-inner" onClick={(e) => e.stopPropagation()}>
+          <div className="seven-modal-inner" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
             <button className="ghost seven-close" onClick={() => setShowSeven(false)}>✕</button>
-            <SevenTable />
+            <Suspense fallback={<div className="seven-wrapper">Loading…</div>}>
+              <SevenTable />
+            </Suspense>
           </div>
         </div>
       )}
