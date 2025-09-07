@@ -66,7 +66,6 @@ export function useBackground() {
 
   function preloadAndSet(nextUrl: string) {
     const img = new Image()
-    img.referrerPolicy = 'no-referrer'
     img.onload = () => {
       setUrl(nextUrl)
       setMode('unsplash')
@@ -92,13 +91,13 @@ export function useBackground() {
     const apiUrl = await fetchRandomUnsplashUrl(keywords)
     const fallback = sourceUnsplashUrl(keywords)
     const lastResort = picsumUrl()
-    const candidate = fallback || apiUrl || lastResort
+    const candidate = apiUrl || fallback || lastResort
     // preloading with a safety timeout fallback
     let settled = false
     const timer = window.setTimeout(() => {
       if (!settled) {
         settled = true
-        preloadAndSet(apiUrl || lastResort)
+        preloadAndSet(apiUrl || fallback || lastResort)
       }
     }, 7000)
     const img = new Image()
@@ -114,8 +113,8 @@ export function useBackground() {
       if (!settled) {
         settled = true
         window.clearTimeout(timer)
-        // try api first if available, otherwise picsum
-        preloadAndSet(apiUrl || lastResort)
+        // try api, then fallback, then picsum
+        preloadAndSet(apiUrl || fallback || lastResort)
       }
     }
     img.src = candidate

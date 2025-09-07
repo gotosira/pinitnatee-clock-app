@@ -1,7 +1,7 @@
 export async function fetchRandomUnsplashUrl(keywords?: string[]): Promise<string | null> {
   try {
-    // short-circuit if we already detected auth failure earlier
-    if ((window as any).__unsplashDisabled) return null
+    // short-circuit if we already detected auth failure earlier (session) or persisted
+    if ((window as any).__unsplashDisabled || isUnsplashTemporarilyDisabled()) return null
     const accessKey = import.meta.env.VITE_UNSPLASH_ACCESS_KEY as string | undefined
     if (!accessKey) return null
 
@@ -20,6 +20,9 @@ export async function fetchRandomUnsplashUrl(keywords?: string[]): Promise<strin
     if (!res.ok) {
       if (res.status === 401 || res.status === 403) {
         ;(window as any).__unsplashDisabled = true
+        try {
+          localStorage.setItem('unsplashDisabledUntil', String(Date.now() + 6 * 60 * 60 * 1000))
+        } catch {}
       }
       return null
     }
@@ -35,6 +38,17 @@ export async function fetchRandomUnsplashUrl(keywords?: string[]): Promise<strin
     return composed
   } catch {
     return null
+  }
+}
+
+export function isUnsplashTemporarilyDisabled(): boolean {
+  try {
+    const s = localStorage.getItem('unsplashDisabledUntil')
+    if (!s) return false
+    const until = Number(s)
+    return Number.isFinite(until) && until > Date.now()
+  } catch {
+    return false
   }
 }
 
