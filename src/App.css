@@ -80,14 +80,6 @@
   padding: 2px 6px;
 }
 
-.focus {
-  display: none;
-}
-
-.focus-remaining {
-  display: none;
-}
-
 .center {
   min-height: 100vh;
   display: flex;
@@ -542,14 +534,6 @@
   left: 75%;
   top: 52%;
   transform: translate(-50%, -50%);
-}
-
-.tasks,
-.tasks-header,
-.tasks-list,
-.task,
-.tasks-input {
-  display: none;
 }
 
 .quote {
