@@ -265,32 +265,7 @@
   top: 10px;
 }
 
-.seven-wrapper {
-  padding: 12px;
-  color: #fff;
-}
-
-.seven-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-  table-layout: fixed;
-  text-align: center;
-  font-weight: 700;
-  font-size: clamp(18px, 3vmin, 30px);
-}
-
-.seven-table tr {
-  filter: none;
-  background: rgba(26, 30, 38, 0.9);
-}
-
-.seven-table td {
-  padding: 16px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  border-radius: 0;
-  cursor: pointer;
-}
+/* (.seven-wrapper / .seven-table base styles live in the consolidated block below) */
 
 .analog-clock .dial {
   position: absolute;
@@ -694,5 +669,148 @@
   .seven-table .star {
     font-size: 1.35em;
     filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 14px rgba(255, 255, 255, 0.9));
+  }
+}
+
+/* ============================================================
+ * Design pass: information hierarchy, motion, mobile, a11y
+ * ============================================================ */
+
+/* Cross-fade backgrounds instead of hard-cutting them every 5 min */
+.app {
+  transition: background-image 600ms ease-in-out;
+}
+
+.analog-clock .dial .dial-bg {
+  transition: background-image 600ms ease-in-out, opacity 400ms ease-in-out;
+}
+
+/* Tone down secondary chrome so the time + yam read primary */
+.analog-clock .segments-24 i {
+  background: rgba(255, 255, 255, 0.07);
+}
+.analog-clock .segments-24 i.major {
+  background: rgba(255, 255, 255, 0.18);
+}
+.analog-clock .tick {
+  background: rgba(255, 255, 255, 0.18);
+}
+.analog-clock .tick.major {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Make the digital time on the dial read with stronger glow */
+.analog-clock .dial-info.bottom2 .digital-time .hhmm {
+  text-shadow: 0 6px 22px rgba(0, 0, 0, 0.7), 0 0 12px rgba(255, 255, 255, 0.08);
+}
+
+/* Battery override inline editor */
+.battery-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+.battery-edit input[type="number"] {
+  width: 60px;
+  padding: 2px 6px;
+  font-size: clamp(11px, 1.9vmin, 14px);
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+.battery-edit input[type="number"]::-webkit-outer-spin-button,
+.battery-edit input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.battery-edit input[aria-invalid="true"] {
+  border-color: rgba(255, 80, 80, 0.7);
+  box-shadow: 0 0 0 2px rgba(255, 80, 80, 0.2);
+}
+.battery-set-btn {
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: clamp(10px, 1.7vmin, 13px);
+  cursor: pointer;
+}
+.battery-set-btn:hover,
+.battery-set-btn:focus-visible {
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Visible focus ring on every interactive element */
+button:focus-visible,
+.seven-table td:focus-visible {
+  outline: 2px solid rgba(120, 220, 255, 0.85);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Mobile layout: tighter dial-info zones, larger tap targets, smaller numerals */
+@media (max-width: 640px) {
+  .top-bar {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .top-left {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .ghost {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  .analog-clock {
+    width: min(92vmin, 92vw);
+  }
+  .analog-clock .dial-info.left,
+  .analog-clock .dial-info.right {
+    max-width: 36%;
+    font-size: clamp(10px, 1.7vmin, 14px);
+  }
+  .analog-clock .dial-info.bottom2 .digital-time .hhmm {
+    font-size: clamp(28px, 9vmin, 56px);
+  }
+  .seven-modal-inner {
+    width: 96vw;
+    max-height: 88vh;
+    padding: 14px 10px;
+  }
+  .seven-table td {
+    height: clamp(40px, 7.6vmin, 60px);
+    padding: 4px;
+  }
+}
+
+/* Respect users who prefer reduced motion: kill the second hand sweep,
+ * remove background fades, calm the active-segment glow. */
+@media (prefers-reduced-motion: reduce) {
+  .app,
+  .analog-clock .dial .dial-bg {
+    transition: none;
+  }
+  .analog-clock .hand.second {
+    display: none;
+  }
+  .analog-clock .segments-24 i.active {
+    box-shadow: none;
+  }
+}
+
+/* Light-mode soften (preview only — manifest still ships dark theme) */
+@media (prefers-color-scheme: light) {
+  .seven-modal {
+    background: rgba(255, 255, 255, 0.45);
   }
 }
