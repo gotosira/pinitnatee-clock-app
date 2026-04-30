@@ -1,17 +1,15 @@
 import { useMemo } from 'react'
-import { useBatteryPercentage } from '../../hooks/useBattery'
 import { useCurrentLocation } from '../../hooks/useLocation'
 import { useTemperature } from '../../hooks/useTemperature'
 import { useBackground } from '../../hooks/useBackground'
 import { weatherEmoji } from '../../utils/weather'
-// quote now rendered in TopBar
 import DigitalTime from '../DigitalTime'
 import YamInlineText from '../YamInline'
+import BatteryReadout from '../BatteryReadout'
 import { useTime } from '../../state/time'
 
 export default function AnalogClock() {
   const { now } = useTime()
-  const battery = useBatteryPercentage()
   const geo = useCurrentLocation()
   const temp = useTemperature()
   const { url } = useBackground()
@@ -123,24 +121,7 @@ export default function AnalogClock() {
         <YamInlineText />
       </div>
       <div className="dial-info left">
-        <div className="label">🔋</div>
-        <div className="value">{typeof battery === 'number' ? `${battery}%` : '—'}</div>
-        <div className="value small" title="Set battery override" onClick={() => {
-          const input = prompt('Battery percent (0-100). Leave empty to clear.')
-          if (input === null) return
-          const trimmed = input.trim()
-          try {
-            if (trimmed === '') localStorage.removeItem('batteryOverride')
-            else {
-              const n = Number(trimmed)
-              if (!Number.isFinite(n) || n < 0 || n > 100) { alert('Please enter a number between 0 and 100'); return }
-              localStorage.setItem('batteryOverride', String(Math.round(n)))
-            }
-            window.dispatchEvent(new Event('battery:override'))
-          } catch {
-            // Storage disabled (private mode)
-          }
-        }}>Set</div>
+        <BatteryReadout />
       </div>
       <div className="dial-info right">
         <div className="label">📍</div>
