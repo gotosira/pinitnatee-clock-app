@@ -1,7 +1,5 @@
-import { BackgroundControls } from './bg/BackgroundControls'
 import InterfaceSwitcher from './InterfaceSwitcher'
-import { useState } from 'react'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState } from 'react'
 const SevenTable = lazy(() => import('./SevenTable'))
 import QuoteBar from './QuoteBar'
 import { useMeditationAudio } from '../hooks/useMeditationAudio'
@@ -14,9 +12,14 @@ export function TopBar() {
       <div className="top-bar">
         <div className="top-left">
           <InterfaceSwitcher />
-          <BackgroundControls />
           <button className="ghost" onClick={() => setShowSeven(true)}>7 ตัวพินิจนาที</button>
-          <button className="ghost" onClick={() => setEnabled(!enabled)}>{enabled ? 'Meditation: On' : 'Meditation: Off'}</button>
+          <button
+            className="ghost"
+            onClick={() => setEnabled(!enabled)}
+            aria-pressed={enabled}
+          >
+            {enabled ? 'Meditation: On' : 'Meditation: Off'}
+          </button>
         </div>
         <div className="top-right" />
       </div>
