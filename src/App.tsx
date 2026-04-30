@@ -1,6 +1,5 @@
 import './App.css'
 import TopBar from './components/TopBar'
-import QuoteBar from './components/QuoteBar'
 import { useBackground } from './hooks/useBackground'
 import AnalogClock from './components/analog/AnalogClock'
 import SimpleInterface from './components/SimpleInterface'
@@ -16,7 +15,6 @@ function App() {
       <main className="center">
         {ui === 'watchface' ? <AnalogClock /> : <SimpleInterface />}
       </main>
-      <QuoteBar />
     </div>
   )
 }

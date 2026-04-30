@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { Period } from '../utils/yam'
 import {
   getThaiDayNumber,
@@ -8,6 +8,7 @@ import {
   daySequenceFor,
   nightSequenceFor
 } from '../utils/yam'
+import { useTime } from '../state/time'
 
 function computeYam(now: Date) {
   const period: Period = isDaytime(now) ? 'day' : 'night'
@@ -61,12 +62,7 @@ function computeMini(now: Date) {
 }
 
 export default function YamInline() {
-  const [now, setNow] = useState(new Date())
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000)
-    return () => clearInterval(id)
-  }, [])
-
+  const { now } = useTime()
   const { period, yam } = useMemo(() => computeYam(now), [now])
   const mini = useMemo(() => computeMini(now), [now])
   const periodLabel = period === 'day' ? 'ยามกลางวัน' : 'ยามกลางคืน'

@@ -93,9 +93,19 @@ export default function SevenTable() {
   const starRowIndex = minutesSinceYamStart <= 30 ? 0 : minutesSinceYamStart <= 60 ? 1 : 2
   const currentYam = rows[1]?.[0]
   return (
-    <div className={`seven-wrapper ${ui === 'watchface' ? 'theme-watchface' : 'theme-simple'}`} aria-hidden="true">
+    <div
+      className={`seven-wrapper ${ui === 'watchface' ? 'theme-watchface' : 'theme-simple'}`}
+      role="grid"
+      aria-label="ตารางพินิจนาที (Pinit-natee table)"
+    >
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <button className="ghost small" onClick={() => { setPicked(null); try { localStorage.removeItem('sevenPicked') } catch { } }}>Reset</button>
+        <button
+          className="ghost small"
+          onClick={() => { setPicked(null); try { localStorage.removeItem('sevenPicked') } catch { /* storage disabled */ } }}
+          aria-label="Reset cell selection"
+        >
+          Reset
+        </button>
       </div>
       <table className="seven-table">
         <tbody>
@@ -106,15 +116,33 @@ export default function SevenTable() {
             return (
               <tr key={i} className={trClass}>
                 {r.map((n, j) => {
-                  const isPrimary = highlightRows.has(i) && n === highlightValue;
-                  const isSecondary = !picked && highlightRows.has(i) && n === currentPinichNumber && n !== highlightValue;
-                  const cellClass = isPrimary ? 'hl' : (isSecondary ? 'hl-sec' : undefined);
+                  const isPrimary = highlightRows.has(i) && n === highlightValue
+                  const isSecondary = !picked && highlightRows.has(i) && n === currentPinichNumber && n !== highlightValue
+                  const isCurrentYamCell = i === starRowIndex && n === currentYam
+                  const cellClass = isPrimary ? 'hl' : (isSecondary ? 'hl-sec' : undefined)
+                  const title = BASE_TITLES[i]?.[j]
+                  const ariaLabel = title ? `${title} ${n}${isCurrentYamCell ? ' — current yam' : ''}` : `${n}${isCurrentYamCell ? ' — current yam' : ''}`
                   return (
-                    <td key={j} className={cellClass} onClick={() => onClickCell(n)}>
+                    <td
+                      key={j}
+                      className={cellClass}
+                      onClick={() => onClickCell(n)}
+                      role="gridcell"
+                      tabIndex={0}
+                      aria-label={ariaLabel}
+                      aria-selected={isPrimary}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          onClickCell(n)
+                        }
+                      }}
+                    >
                       <div className="cell-content">
-                        {BASE_TITLES[i] && <div className="cell-title">{BASE_TITLES[i][j]}</div>}
+                        {title && <div className="cell-title">{title}</div>}
                         <div className="cell-number">
-                          {n}{i === starRowIndex && n === currentYam ? ' ' : ''}{i === starRowIndex && n === currentYam ? <span className="star" aria-label="current yam">⭐</span> : null}
+                          {n}
+                          {isCurrentYamCell && <span className="star" aria-hidden="true"> ⭐</span>}
                         </div>
                       </div>
                     </td>

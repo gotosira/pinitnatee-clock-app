@@ -4,19 +4,18 @@ import YamInlineText from './YamInline'
 import { useCurrentLocation } from '../hooks/useLocation'
 import { useTemperature } from '../hooks/useTemperature'
 import { weatherEmoji } from '../utils/weather'
+import { useTime } from '../state/time'
+
+const DAY_NAMES = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
 export default function SimpleInterface() {
+  const { now } = useTime()
   const geo = useCurrentLocation()
   const temp = useTemperature()
   const dateText = useMemo(() => {
-    const now = new Date()
-    const dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT']
     const m = now.toLocaleString('en-US', { month: 'short' }).toUpperCase()
-    const d = now.getDate()
-    const day = dayNames[now.getDay()]
-    const y = now.getFullYear()
-    return { day, d, m, y }
-  }, [])
+    return { day: DAY_NAMES[now.getDay()], d: now.getDate(), m, y: now.getFullYear() }
+  }, [now.getFullYear(), now.getMonth(), now.getDate(), now.getDay()])
   return (
     <div className="simple-ui" style={{display:'grid', gap:12, placeItems:'center'}}>
       <DigitalTime />

@@ -21,13 +21,11 @@ export default function AnalogClock() {
   const hour = (now.getHours() % 12) + min / 60
 
   const dateText = useMemo(() => {
-    const dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT']
+    const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
     const m = now.toLocaleString('en-US', { month: 'short' }).toUpperCase()
-    const d = now.getDate()
-    const day = dayNames[now.getDay()]
-    const y = now.getFullYear()
-    return { day, d, m, y }
-  }, [now])
+    return { day: dayNames[now.getDay()], d: now.getDate(), m, y: now.getFullYear() }
+    // Recompute only when the calendar day rolls over, not every second.
+  }, [now.getFullYear(), now.getMonth(), now.getDate(), now.getDay()])
 
   const rSec = sec * 6
   const rMin = min * 6
