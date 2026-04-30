@@ -1,62 +1,70 @@
 import { useEffect, useState } from 'react'
 
+interface BatteryManager extends EventTarget {
+  level: number // 0..1
+  charging: boolean
+  addEventListener(type: 'levelchange' | 'chargingchange', listener: () => void): void
+  removeEventListener(type: 'levelchange' | 'chargingchange', listener: () => void): void
+}
+
+interface BatteryNavigator extends Navigator {
+  getBattery?: () => Promise<BatteryManager>
+  battery?: BatteryManager
+  mozBattery?: BatteryManager
+  webkitBattery?: BatteryManager
+}
+
+function clampPercent(n: number): number {
+  if (!Number.isFinite(n)) return 0
+  return Math.max(0, Math.min(100, n))
+}
+
 export function useBatteryPercentage(): number | null {
   const [level, setLevel] = useState<number | null>(null)
   const [manual, setManual] = useState<number | null>(null)
 
   useEffect(() => {
-    let battery: any
+    const nav = navigator as BatteryNavigator
+    let battery: BatteryManager | null = null
     let unsubscribe: (() => void) | null = null
+
     async function init() {
       try {
-        const nav: any = navigator as any
         const candidate = nav.getBattery
           ? await nav.getBattery()
           : nav.battery || nav.mozBattery || nav.webkitBattery
-        if (candidate) {
-          battery = candidate
-          const calc = () => {
-            const raw = typeof battery.level === 'number' ? battery.level : undefined
-            if (typeof raw === 'number') setLevel(Math.round(raw * 100))
+        if (!candidate) return
+        battery = candidate
+        const calc = () => {
+          if (typeof battery!.level === 'number') {
+            setLevel(Math.round(battery!.level * 100))
           }
-          calc()
-          if (battery.addEventListener) {
-            battery.addEventListener('levelchange', calc)
-            unsubscribe = () => battery.removeEventListener('levelchange', calc)
-          } else if ('onlevelchange' in battery) {
-            const prev = battery.onlevelchange
-            battery.onlevelchange = () => {
-              prev?.()
-              calc()
-            }
-            unsubscribe = () => {
-              battery.onlevelchange = prev
-            }
-          }
-        } else {
-          // iOS Safari does not expose Battery API; try Web App Manifest power info via navigator.getBattery polyfills (none available)
-          setLevel(null)
         }
-      } catch {
-        setLevel(null)
+        calc()
+        battery.addEventListener('levelchange', calc)
+        unsubscribe = () => battery!.removeEventListener('levelchange', calc)
+      } catch (err) {
+        // Battery API not available (iOS Safari, locked-down browsers)
+        console.info('[battery] API unavailable', err)
       }
     }
+
     init()
-    return () => {
-      if (unsubscribe) unsubscribe()
-    }
+    return () => unsubscribe?.()
   }, [])
 
   useEffect(() => {
     const read = () => {
       try {
         const s = localStorage.getItem('batteryOverride')
-        if (s === null || s === '') setManual(null)
-        else {
-          const n = Number(s)
-          setManual(Number.isFinite(n) ? Math.max(0, Math.min(100, n)) : null)
+        if (s === null || s === '') {
+          setManual(null)
+          return
         }
+        const n = Number(s)
+        setManual(Number.isFinite(n) ? clampPercent(n) : null)
       } catch {
+        // Storage disabled (private mode)
         setManual(null)
       }
     }
@@ -72,5 +80,3 @@ export function useBatteryPercentage(): number | null {
 
   return manual ?? level
 }
-
-

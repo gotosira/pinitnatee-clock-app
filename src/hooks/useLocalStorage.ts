@@ -31,7 +31,11 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     }
     const onStorage = (e: StorageEvent) => {
       if (e.key === key && e.newValue !== null) {
-        try { setValue(JSON.parse(e.newValue) as T) } catch {}
+        try {
+          setValue(JSON.parse(e.newValue) as T)
+        } catch {
+          // Cross-tab payload was malformed; ignore and keep current value
+        }
       }
     }
     window.addEventListener('local-storage', onCustom)

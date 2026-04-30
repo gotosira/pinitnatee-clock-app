@@ -18,8 +18,13 @@ function pad2(n: number) {
 
 export default function YamInline() {
   const { now } = useTime()
-  const period = useMemo(() => (isDaytime(now) ? 'day' : 'night'), [now.getHours(), now.getMinutes()])
-  const yam = useMemo(() => getCurrentYam(now), [now.getHours(), now.getMinutes()])
+  const minuteKey = `${now.getHours()}-${now.getMinutes()}`
+  // period and yam only change at minute granularity (yam segments are 90 min)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const period = useMemo(() => (isDaytime(now) ? 'day' : 'night'), [minuteKey])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const yam = useMemo(() => getCurrentYam(now), [minuteKey])
+  // pinich mini-segment changes at 3.75-min boundaries → recompute every tick is cheap
   const mini = useMemo(() => getCurrentPinichMini(now), [now])
 
   const elapsedSec = secondsSinceYamStart(now)

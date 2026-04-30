@@ -62,19 +62,35 @@ const BASE_TITLES: Record<number, string[]> = {
 
 export default function SevenTable() {
   const { now } = useTime()
-  const rows = useMemo(() => buildRows(now), [now.getTime()])
+  const tickKey = now.getTime()
+  // Recompute every tick so highlights and the star follow real time.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const rows = useMemo(() => buildRows(now), [tickKey])
   const [picked, setPicked] = useState<number | null>(() => {
-    try { const v = localStorage.getItem('sevenPicked'); return v ? Number(v) : null } catch { return null }
+    try {
+      const v = localStorage.getItem('sevenPicked')
+      return v ? Number(v) : null
+    } catch {
+      // Storage disabled (private mode)
+      return null
+    }
   })
-  const currentYamNumber = useMemo(() => getCurrentYam(now), [now.getTime()])
-  const currentPinichNumber = useMemo(() => getCurrentPinichMini(now), [now.getTime()])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const currentYamNumber = useMemo(() => getCurrentYam(now), [tickKey])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const currentPinichNumber = useMemo(() => getCurrentPinichMini(now), [tickKey])
   const autoValue = currentYamNumber
   const highlightValue = picked ?? autoValue
   const highlightRows = useMemo(() => new Set([0, 1, 2, 4, 7, 8]), [])
   const [ui] = useInterface()
   const onClickCell = useCallback((n: number) => {
     setPicked(n)
-    try { localStorage.setItem('sevenPicked', String(n)); window.dispatchEvent(new Event('localStorageChange')) } catch { }
+    try {
+      localStorage.setItem('sevenPicked', String(n))
+      window.dispatchEvent(new Event('localStorageChange'))
+    } catch {
+      // Storage disabled (private mode)
+    }
   }, [])
 
   // Star moves through rows 0/1/2 as we cross each 30-min third of the current yam.

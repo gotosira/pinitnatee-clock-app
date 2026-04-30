@@ -39,6 +39,9 @@ export function useTemperature() {
       cancelled = true
       window.clearInterval(id)
     }
+    // We only want to re-run when the location actually moves, not when other
+    // properties of the geo object change (e.g. resolved place name).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geo?.lat, geo?.lon])
 
   const value = celsius === null ? null : unit === 'C' ? celsius : celsius * 9 / 5 + 32
