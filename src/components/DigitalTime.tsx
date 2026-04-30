@@ -1,17 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useTime } from '../state/time'
 
 function pad2(n: number) {
   return String(n).padStart(2, '0')
 }
 
 export default function DigitalTime() {
-  const [now, setNow] = useState(new Date())
-
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000)
-    return () => clearInterval(id)
-  }, [])
-
+  const { now } = useTime()
   const hours12 = ((now.getHours() + 11) % 12) + 1
   const minutes = now.getMinutes()
   const ampm = now.getHours() < 12 ? 'AM' : 'PM'
@@ -23,5 +17,3 @@ export default function DigitalTime() {
     </div>
   )
 }
-
-
