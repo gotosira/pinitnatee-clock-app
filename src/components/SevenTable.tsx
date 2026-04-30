@@ -53,6 +53,14 @@ function buildRows(now: Date) {
   return rows
 }
 
+const BASE_TITLES: Record<number, string[]> = {
+  0: ['อัตตะ', 'หินะ', 'ธนัง', 'ปิตา', 'มาตา', 'โภคา', 'มัชฌิมา'],
+  1: ['ตะนุ', 'กดุมภะ', 'สหัชชะ', 'พันธุ', 'ปุตตะ', 'อริ', 'ปัตนิ'],
+  2: ['มรณะ', 'ศุภะ', 'กัมมะ', 'ลาภะ', 'พยายะ', 'ทาสา', 'ทาสี'],
+  7: ['อาตมะ', 'ทาสา', 'โชค', 'สมบัติ', 'โจร', 'อุบาทว์', 'อุปถัมภ์'],
+  8: ['อัตตะ', 'สักกะ', 'ญาติ', 'ธนัง', 'เคหัง', 'นาวัง', 'ภริยัง'],
+}
+
 export default function SevenTable() {
   const { now } = useTime()
   const rows = useMemo(() => buildRows(now), [now.getTime()])
@@ -60,13 +68,14 @@ export default function SevenTable() {
     try { const v = localStorage.getItem('sevenPicked'); return v ? Number(v) : null } catch { return null }
   })
   const currentYamNumber = useMemo(() => getCurrentYam(now), [now.getTime()])
+  const currentPinichNumber = useMemo(() => getCurrentPinichMini(now), [now.getTime()])
   const autoValue = currentYamNumber
   const highlightValue = picked ?? autoValue
   const highlightRows = useMemo(() => new Set([0, 1, 2, 4, 7, 8]), [])
   const [ui] = useInterface()
   const onClickCell = useCallback((n: number) => {
     setPicked(n)
-    try { localStorage.setItem('sevenPicked', String(n)); window.dispatchEvent(new Event('localStorageChange')) } catch {}
+    try { localStorage.setItem('sevenPicked', String(n)); window.dispatchEvent(new Event('localStorageChange')) } catch { }
   }, [])
 
   // Determine which of the first three rows (0/1/2) to star based on minute within current 90-min Yam
@@ -86,7 +95,7 @@ export default function SevenTable() {
   return (
     <div className={`seven-wrapper ${ui === 'watchface' ? 'theme-watchface' : 'theme-simple'}`} aria-hidden="true">
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <button className="ghost small" onClick={() => { setPicked(null); try { localStorage.removeItem('sevenPicked') } catch {} }}>Reset</button>
+        <button className="ghost small" onClick={() => { setPicked(null); try { localStorage.removeItem('sevenPicked') } catch { } }}>Reset</button>
       </div>
       <table className="seven-table">
         <tbody>
@@ -95,13 +104,23 @@ export default function SevenTable() {
             if (i === 5 || i === 6) return null
             const trClass = i < 3 ? 'g1' : (i === 3 ? 'g2' : (i === 4 ? 'g3' : ((i === 7 || i === 8) ? 'g4' : '')))
             return (
-            <tr key={i} className={trClass}>
-              {r.map((n, j) => (
-                <td key={j} className={highlightRows.has(i) && n === highlightValue ? 'hl' : undefined} onClick={() => onClickCell(n)}>
-                  <span>{n}{i === starRowIndex && n === currentYam ? ' ' : ''}{i === starRowIndex && n === currentYam ? <span className="star" aria-label="current yam">⭐</span> : null}</span>
-                </td>
-              ))}
-            </tr>
+              <tr key={i} className={trClass}>
+                {r.map((n, j) => {
+                  const isPrimary = highlightRows.has(i) && n === highlightValue;
+                  const isSecondary = !picked && highlightRows.has(i) && n === currentPinichNumber && n !== highlightValue;
+                  const cellClass = isPrimary ? 'hl' : (isSecondary ? 'hl-sec' : undefined);
+                  return (
+                    <td key={j} className={cellClass} onClick={() => onClickCell(n)}>
+                      <div className="cell-content">
+                        {BASE_TITLES[i] && <div className="cell-title">{BASE_TITLES[i][j]}</div>}
+                        <div className="cell-number">
+                          {n}{i === starRowIndex && n === currentYam ? ' ' : ''}{i === starRowIndex && n === currentYam ? <span className="star" aria-label="current yam">⭐</span> : null}
+                        </div>
+                      </div>
+                    </td>
+                  )
+                })}
+              </tr>
             )
           })}
         </tbody>
