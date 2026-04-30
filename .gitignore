@@ -1,4 +1,39 @@
-node_modules
-.dist
+# Dependencies
+node_modules/
+
+# Build output (gh-pages branch holds the deployed artifacts)
+dist/
+
+# Environment files
+.env
 .env.local
+.env.*.local
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Editor / IDE state
+.vscode/
+.idea/
+.windsurf/
+.cursor/
+.aider*
+
+# Claude Code local config (not for the repo)
+.claude/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript build cache
+*.tsbuildinfo
+
+# Vite cache
+.vite/
+
+# Test coverage
+coverage/
