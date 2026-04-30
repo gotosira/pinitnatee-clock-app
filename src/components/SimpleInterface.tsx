@@ -12,10 +12,13 @@ export default function SimpleInterface() {
   const { now } = useTime()
   const geo = useCurrentLocation()
   const temp = useTemperature()
+  const dayKey = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`
   const dateText = useMemo(() => {
     const m = now.toLocaleString('en-US', { month: 'short' }).toUpperCase()
     return { day: DAY_NAMES[now.getDay()], d: now.getDate(), m, y: now.getFullYear() }
-  }, [now.getFullYear(), now.getMonth(), now.getDate(), now.getDay()])
+    // dayKey changes only at calendar-day rollover; safe to ignore exhaustive-deps for `now`.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dayKey])
   return (
     <div className="simple-ui" style={{display:'grid', gap:12, placeItems:'center'}}>
       <DigitalTime />

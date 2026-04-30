@@ -20,12 +20,14 @@ export default function AnalogClock() {
   const min = now.getMinutes() + sec / 60
   const hour = (now.getHours() % 12) + min / 60
 
+  const dayKey = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`
   const dateText = useMemo(() => {
     const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
     const m = now.toLocaleString('en-US', { month: 'short' }).toUpperCase()
     return { day: dayNames[now.getDay()], d: now.getDate(), m, y: now.getFullYear() }
-    // Recompute only when the calendar day rolls over, not every second.
-  }, [now.getFullYear(), now.getMonth(), now.getDate(), now.getDay()])
+    // Recompute only when the calendar day rolls over.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dayKey])
 
   const rSec = sec * 6
   const rMin = min * 6
@@ -135,7 +137,9 @@ export default function AnalogClock() {
               localStorage.setItem('batteryOverride', String(Math.round(n)))
             }
             window.dispatchEvent(new Event('battery:override'))
-          } catch {}
+          } catch {
+            // Storage disabled (private mode)
+          }
         }}>Set</div>
       </div>
       <div className="dial-info right">
