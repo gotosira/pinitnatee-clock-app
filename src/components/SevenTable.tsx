@@ -1,7 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import { useInterface } from '../state/ui'
-import { isDaytime } from '../utils/yam'
-import { getCurrentPinichMini, getCurrentYam, getThaiDayNumber } from '../utils/yam'
+import { getCurrentPinichMini, getCurrentYam, getThaiDayNumber, yamThirdIndex } from '../utils/yam'
 import { useTime } from '../state/time'
 
 const CYCLE = [1, 6, 4, 2, 7, 5, 3]
@@ -78,19 +77,8 @@ export default function SevenTable() {
     try { localStorage.setItem('sevenPicked', String(n)); window.dispatchEvent(new Event('localStorageChange')) } catch { }
   }, [])
 
-  // Determine which of the first three rows (0/1/2) to star based on minute within current 90-min Yam
-  const minutesSinceYamStart = useMemo(() => {
-    const h = now.getHours()
-    const m = now.getMinutes()
-    const s = now.getSeconds()
-    const minuteFrac = m + s / 60
-    if (isDaytime(now)) {
-      return ((h - 6) * 60 + minuteFrac) % 90
-    }
-    return ((h >= 18 ? (h - 18) * 60 : (h + 6) * 60) + minuteFrac) % 90
-  }, [now])
-
-  const starRowIndex = minutesSinceYamStart <= 30 ? 0 : minutesSinceYamStart <= 60 ? 1 : 2
+  // Star moves through rows 0/1/2 as we cross each 30-min third of the current yam.
+  const starRowIndex = useMemo(() => yamThirdIndex(now), [now])
   const currentYam = rows[1]?.[0]
   return (
     <div
