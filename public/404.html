@@ -1,9 +1,13 @@
 <!doctype html>
 <html>
   <head>
-    <meta http-equiv="refresh" content="0; url=/" />
+    <script>
+      const repoBase = '/pinitnatee-clock-app/'
+      window.location.replace(
+        window.location.pathname.startsWith(repoBase) ? repoBase : '/',
+      )
+    </script>
   </head>
   <body></body>
   </html>
-
 
